@@ -2,11 +2,33 @@ import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 import os, random, pathlib, tempfile
 from quotes import quotes_list  # External quote file
+import time
+import json
+from streamlit_lottie import st_lottie
 
 # ----- CONFIG -----
 st.set_page_config(page_title="Aesthetic Quote Forge", layout="centered")
 st.title("🌸 Aesthetic Quote Forge")
 
+# --- Splash Animation ---
+def load_lottiefile(filepath):
+    with open(filepath, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+if "show_intro" not in st.session_state:
+    st.session_state.show_intro = True
+
+if st.session_state.show_intro:
+    lottie_intro = load_lottiefile("loading.json")
+    splash = st.empty()
+    with splash.container():
+        st.markdown("<h1 style='text-align:center;'>Welcome to QUOTE GENERATOR!</h1>", unsafe_allow_html=True)
+        st_lottie(lottie_intro, height=280, speed=1.0, loop=False)
+        time.sleep(2)
+    splash.empty()
+    st.session_state.show_intro = False
+
+    
 # ----- INITIALIZE SESSION QUOTE -----
 if "selected_quote" not in st.session_state:
     st.session_state.selected_quote = random.choice(quotes_list)
